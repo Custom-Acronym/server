@@ -52,7 +52,7 @@ describe('read acronyms', () => {
 
     it('should be case insensitive', (done) => {
         chai.request(app)
-            .get('/api/BK')
+            .get('/api/Bk')
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200);

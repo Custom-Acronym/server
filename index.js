@@ -6,6 +6,9 @@ const app = express();
 app.use(express.json());
 app.use('/api', router);
 
+/**
+ * Connect to the database and start the server
+ */
 let testing = process.argv[1].includes('mocha');
 connectDb(testing).then(async () => {
     const PORT = process.env.PORT || 3000;
