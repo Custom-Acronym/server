@@ -6,9 +6,12 @@ const app = express();
 app.use(express.json());
 app.use('/api', router);
 
-connectDb().then(async () => {
+let testing = process.argv[1].includes('mocha');
+connectDb(testing).then(async () => {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () =>
-        console.log(`server listening on port ${PORT}!`),
+        !testing && console.log(`server listening on port ${PORT}!`)
     );
 });
+
+module.exports = app;

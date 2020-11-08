@@ -2,8 +2,14 @@ const mongoose = require('mongoose');
 
 const acronymSchema = new mongoose.Schema(
     {
-        acronym: String,
-        definition: String,
+        acronym: {
+            type: String,
+            required: true
+        },
+        definition: {
+            type: String,
+            required: true
+        },
     }
 );
 

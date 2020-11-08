@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const Acronym = require('./acronym');
 
-const connectDb = () => {
+const connectDb = (testing) => {
+    let url = testing ? process.env.DATABASE_TEST_URL : process.env.DATABASE_URL;
     return mongoose.connect(
-        process.env.DATABASE_URL,
+        url,
         {
             useNewUrlParser: true,
             useUnifiedTopology: true,

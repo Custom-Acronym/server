@@ -26,9 +26,9 @@ router.post('/', (req, res) => {
     let acronym = new Acronym(req.body);
     acronym.save((err) => {
         if (err) {
-            return res.status(400).send(err);
+            return res.status(400).send(err._message);
         }
-        res.send('success');
+        res.status(201).send('successfully created acronym');
     });
 });
 
