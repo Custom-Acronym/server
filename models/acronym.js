@@ -1,9 +1,18 @@
 const mongoose = require('mongoose');
 
+/**
+ * Represents an acronym
+ */
 const acronymSchema = new mongoose.Schema(
     {
-        acronym: String,
-        definition: String,
+        acronym: {
+            type: String,
+            required: true
+        },
+        definition: {
+            type: String,
+            required: true
+        },
     }
 );
 
