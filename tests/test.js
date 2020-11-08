@@ -6,7 +6,7 @@ let expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('read acronyms', () => {
-    it('should not serve anything at /', (done) => {
+    it('should not serve anything at root', (done) => {
         chai.request(app)
             .get('/')
             .end((err, res) => {
@@ -39,6 +39,17 @@ describe('read acronyms', () => {
             });
     });
 
+    it('should return empty list if not found', (done) => {
+        chai.request(app)
+            .get('/api/invalid')
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res).to.have.status(200);
+                expect(res.body.length).to.equal(0);
+                done();
+            });
+    });
+
     it('should be case insensitive', (done) => {
         chai.request(app)
             .get('/api/BK')
@@ -65,7 +76,7 @@ describe('create acronyms', () => {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(201);
-                expect(res.text).to.equal('successfully created acronym');
+                expect(res.body.message).to.equal('successfully created definition');
                 done();
             });
     });
@@ -86,8 +97,71 @@ describe('create acronyms', () => {
     });
 });
 
-// describe('update acronyms', () => {
-//     it('should update an acronym', (done) => {
+describe('update acronyms', () => {
+    it('should update an acronym', (done) => {
+        let id = '5fa5d141ec2e5e8ee2b870b2';
+        let update = {
+            definition: 'new definition'
+        };
+        chai.request(app)
+            .put('/api/' + id)
+            .send(update)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res).to.have.status(200);
+                expect(res.text).to.equal('successfully updated definition');
+                done();
+            });
+    });
 
-//     });
-// });
+    it('should return error if invalid', (done) => {
+        let id = 'invalid';
+        let update = {
+            definition: 'new definition'
+        };
+        chai.request(app)
+            .put('/api/' + id)
+            .send(update)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res).to.have.status(400);
+                expect(res.text).to.equal('CastError: Cast to ObjectId failed for value "invalid" at path "_id" for model "Acronym"');
+                done();
+            });
+    });
+});
+
+describe('delete acronyms', () => {
+    it('should delete acronyms', (done) => {
+        let acronym = {
+            acronym: 'DEL',
+            definition: 'to be deleted'
+        };
+        chai.request(app)
+            .post('/api')
+            .send(acronym)
+            .end((err, res) => {
+                let id = res.body.id;
+                chai.request(app)
+                    .delete('/api/' + id)
+                    .end((err, res) => {
+                        expect(err).to.be.null;
+                        expect(res).to.have.status(200);
+                        expect(res.text).to.equal('successfully deleted definition');
+                        done();
+                    });
+            });
+    });
+
+    it('should return error if invalid', (done) => {
+        let id = 'invalid';
+        chai.request(app)
+            .delete('/api/' + id)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res).to.have.status(400);
+                expect(res.text).to.equal('CastError: Cast to ObjectId failed for value "invalid" at path "_id" for model "Acronym"');
+                done();
+            });
+    });
+});

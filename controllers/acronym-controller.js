@@ -28,7 +28,8 @@ router.post('/', (req, res) => {
         if (err) {
             return res.status(400).send(err._message);
         }
-        res.status(201).send('successfully created acronym');
+        let newId = acronym._id.toString();
+        res.status(201).send({ message: 'successfully created definition', id: newId });
     });
 });
 
@@ -37,9 +38,9 @@ router.put('/:id', (req, res) => {
     let update = req.body;
     Acronym.findByIdAndUpdate(id, update, (err) => {
         if (err) {
-            return res.status(400).send(err);
+            return res.status(400).send(err.toString());
         }
-        res.send('success');
+        res.send('successfully updated definition');
     });
 });
 
@@ -47,9 +48,9 @@ router.delete('/:id', (req, res) => {
     let id = req.params.id;
     Acronym.findByIdAndDelete(id, (err) => {
         if (err) {
-            return res.status(400).send(err);
+            return res.status(400).send(err.toString());
         }
-        res.send('success');
+        res.send('successfully deleted definition');
     });
 });
 
