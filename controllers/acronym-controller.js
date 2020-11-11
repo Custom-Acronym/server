@@ -102,11 +102,11 @@ router.put('/:id', (req, res) => {
 });
 
 /**
- * DEL /api/:id
+ * DELETE /api/:id
  * @summary Deletes an existing acronym-definition pair
  * @param {string} id the ID of the acronym
- * @return {string} - a confirmation message
- * @example DEL /api/5fa5d141ec2e5e8ee2b870b2
+ * @return {string} 200 - a confirmation message
+ * @example DELETE /api/5fa5d141ec2e5e8ee2b870b2
  * 'successfully deleted definition'
  */
 router.delete('/:id', (req, res) => {
