@@ -71,14 +71,20 @@ router.get('/:acronym', (req, res) => {
  * }
  */
 router.post('/', (req, res) => {
-    let acronym = new Acronym(req.body);
-    acronym.save((err) => {
-        if (err) {
-            return res.status(400).send(err._message);
+    let acronyms = req.body;
+    let created = [];
+    for (let acronymObject of acronyms) {
+        console.log(acronymObject);
+        if (!('acronym' in acronymObject) || !('definition' in acronymObject)) {
+            return res.status(400).send('invalid acronym');
         }
-        let newId = acronym._id.toString();
-        res.status(201).send({ message: 'successfully created definition', id: newId });
-    });
+    }
+    for (let acronymObject of acronyms) {
+        let acronym = new Acronym(acronymObject);
+        created.push(acronym._id.toString());
+        acronym.save();
+    }
+    res.status(201).send({ message: 'successfully created definitions', id: created });
 });
 
 /**
