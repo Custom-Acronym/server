@@ -17,7 +17,7 @@ describe('read acronyms', () => {
 
     it('should fetch all acronyms', (done) => {
         chai.request(app)
-            .get('/api')
+            .get('/api/acronym')
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200);
@@ -26,9 +26,9 @@ describe('read acronyms', () => {
             });
     });
 
-    it('should fetch a single acronym', (done) => {
+    it('should fetch a single definition', (done) => {
         chai.request(app)
-            .get('/api/bk')
+            .get('/api/acronym/bk')
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200);
@@ -39,9 +39,24 @@ describe('read acronyms', () => {
             });
     });
 
+    it('should fetch multiple definitions for an acronym', (done) => {
+        chai.request(app)
+            .get('/api/acronym/uiuc')
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res).to.have.status(200);
+                expect(res.body.length).to.equal(2);
+                expect(res.body[0].acronym).to.equal('uiuc');
+                expect(res.body[0].definition).to.equal('University of Illinois at Urbana-Champaign');
+                expect(res.body[1].acronym).to.equal('uiuc');
+                expect(res.body[1].definition).to.equal('Uplink Interval Usage Code');
+                done();
+            });
+    });
+
     it('should return empty list if not found', (done) => {
         chai.request(app)
-            .get('/api/invalid')
+            .get('/api/acronym/invalid')
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200);
@@ -52,7 +67,7 @@ describe('read acronyms', () => {
 
     it('should be case insensitive', (done) => {
         chai.request(app)
-            .get('/api/Bk')
+            .get('/api/acronym/Bk')
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200);
@@ -64,34 +79,81 @@ describe('read acronyms', () => {
     });
 });
 
-describe('create acronyms', () => {
-    it('should insert an acronym', (done) => {
-        let acronym = {
+describe('create one acronym', () => {
+    it('should insert one acronym', (done) => {
+        let acronym = [{
             acronym: 'TEST',
             definition: 'test definition'
-        };
+        }];
         chai.request(app)
-            .post('/api')
+            .post('/api/acronym')
             .send(acronym)
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(201);
-                expect(res.body.message).to.equal('successfully created definition');
+                expect(res.body.message).to.equal('successfully created definitions');
+                expect(res.body.id.length).to.equal(1);
                 done();
             });
     });
 
     it('should require both fields', (done) => {
-        let acronym = {
+        let acronym = [{
             definition: 'test definition'
-        };
+        }];
         chai.request(app)
-            .post('/api')
+            .post('/api/acronym')
             .send(acronym)
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(400);
-                expect(res.text).to.equal('Acronym validation failed');
+                expect(res.text).to.equal('invalid acronym');
+                done();
+            });
+    });
+});
+
+describe('create multiple acronym', () => {
+    it('should insert multiple acronym', (done) => {
+        let acronym = [
+            {
+                acronym: 'TEST',
+                definition: 'test definition'
+            },
+            {
+                acronym: 'TEST2',
+                definition: 'test definition'
+            }
+        ];
+        chai.request(app)
+            .post('/api/acronym')
+            .send(acronym)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res).to.have.status(201);
+                expect(res.body.message).to.equal('successfully created definitions');
+                expect(res.body.id.length).to.equal(2);
+                done();
+            });
+    });
+
+    it('should require both fields', (done) => {
+        let acronym = [
+            {
+                acronym: 'TEST',
+                definition: 'test definition'
+            },
+            {
+                acronym: 'TEST2',
+            }
+        ];
+        chai.request(app)
+            .post('/api/acronym')
+            .send(acronym)
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res).to.have.status(400);
+                expect(res.text).to.equal('invalid acronym');
                 done();
             });
     });
@@ -104,7 +166,7 @@ describe('update acronyms', () => {
             definition: 'new definition'
         };
         chai.request(app)
-            .put('/api/' + id)
+            .put('/api/acronym/' + id)
             .send(update)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -120,7 +182,7 @@ describe('update acronyms', () => {
             definition: 'new definition'
         };
         chai.request(app)
-            .put('/api/' + id)
+            .put('/api/acronym/' + id)
             .send(update)
             .end((err, res) => {
                 expect(err).to.be.null;
@@ -133,17 +195,17 @@ describe('update acronyms', () => {
 
 describe('delete acronyms', () => {
     it('should delete acronyms', (done) => {
-        let acronym = {
+        let acronym = [{
             acronym: 'DEL',
             definition: 'to be deleted'
-        };
+        }];
         chai.request(app)
-            .post('/api')
+            .post('/api/acronym')
             .send(acronym)
             .end((err, res) => {
-                let id = res.body.id;
+                let id = res.body.id[0];
                 chai.request(app)
-                    .delete('/api/' + id)
+                    .delete('/api/acronym/' + id)
                     .end((err, res) => {
                         expect(err).to.be.null;
                         expect(res).to.have.status(200);
@@ -156,7 +218,7 @@ describe('delete acronyms', () => {
     it('should return error if invalid', (done) => {
         let id = 'invalid';
         chai.request(app)
-            .delete('/api/' + id)
+            .delete('/api/acronym/' + id)
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(400);

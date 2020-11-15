@@ -31,7 +31,7 @@ router.get('/', (req, res) => {
 });
 
 /**
- * GET /api/acronym/:id
+ * GET /api/acronym/:acronym
  * @summary Returns the definitions for a single acronym
  * @param {string} acronym the name of the acronym (case insensitive)
  * @return {[object]} 200 - a list of JSON objects containing acronyms matching the given acronym
@@ -61,20 +61,19 @@ router.get('/:acronym', (req, res) => {
 
 /**
  * POST /api/acronym
- * @summary Inserts a new acronym-definition pair
- * @param {Acronym} - the name and definition of the new acronym
- * @return {Object} 201 - a confirmation message and the id of the inserted acronym
- * @example POST /api/acronym {acronym: 'BK', definition: 'Burger King'}
+ * @summary Inserts new acronym-definition pairs
+ * @param {[Acronym]} - a list of names and definitions of the new acronyms
+ * @return {Object} 201 - a confirmation message and the ids of the inserted acronyms
+ * @example POST /api/acronym [{acronym: 'BK', definition: 'Burger King'}]
  * {
- *  message: 'successfully created definition',
- *  id: '5fa5d141ec2e5e8ee2b870b2'
+ *  message: 'successfully created definitions',
+ *  id: ['5fa5d141ec2e5e8ee2b870b2']
  * }
  */
 router.post('/', (req, res) => {
     let acronyms = req.body;
     let created = [];
     for (let acronymObject of acronyms) {
-        console.log(acronymObject);
         if (!('acronym' in acronymObject) || !('definition' in acronymObject)) {
             return res.status(400).send('invalid acronym');
         }
