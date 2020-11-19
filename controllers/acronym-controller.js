@@ -75,7 +75,7 @@ router.post('/', (req, res) => {
     let created = [];
     for (let acronymObject of acronyms) {
         if (!('acronym' in acronymObject) || !('definition' in acronymObject)) {
-            return res.status(400).send('invalid acronym');
+            return res.status(400).send({ message: 'invalid acronym', id: created });
         }
     }
     for (let acronymObject of acronyms) {
