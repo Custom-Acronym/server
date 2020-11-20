@@ -7,9 +7,7 @@ const voteRouter = require('./controllers/vote-controller');
 
 const app = express();
 // app.use(express.json());
-app.use(formidableMiddleware({
-    uploadDir: './temp/',
-}));
+app.use(formidableMiddleware());
 app.use('/api/acronym', acronymRouter);
 app.use('/api/report', reportRouter);
 app.use('/api/vote', voteRouter);
