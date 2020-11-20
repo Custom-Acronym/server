@@ -107,7 +107,7 @@ describe('create one acronym', () => {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(400);
-                expect(res.text).to.equal('invalid acronym');
+                expect(res.body.message).to.equal('invalid acronym');
                 done();
             });
     });
@@ -153,7 +153,7 @@ describe('create multiple acronym', () => {
             .end((err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(400);
-                expect(res.text).to.equal('invalid acronym');
+                expect(res.body.message).to.equal('invalid acronym');
                 done();
             });
     });

@@ -1,11 +1,15 @@
 const express = require('express');
+const formidableMiddleware = require('express-formidable');
 const { connectDb } = require('./models');
 const acronymRouter = require('./controllers/acronym-controller');
 const reportRouter = require('./controllers/report-controller');
 const voteRouter = require('./controllers/vote-controller');
 
 const app = express();
-app.use(express.json());
+// app.use(express.json());
+app.use(formidableMiddleware({
+    uploadDir: './temp/',
+}));
 app.use('/api/acronym', acronymRouter);
 app.use('/api/report', reportRouter);
 app.use('/api/vote', voteRouter);

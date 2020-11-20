@@ -1,4 +1,5 @@
 var express = require('express')
+const fs = require('fs');
 const { Acronym } = require('../models');
 
 var router = express.Router()
@@ -71,7 +72,18 @@ router.get('/:acronym', (req, res) => {
  * }
  */
 router.post('/', (req, res) => {
-    let acronyms = req.body;
+    let acronyms = [];
+    if (Object.keys(req.fields).length !== 0) {
+        for (let i in req.fields) {
+            acronyms.push(req.fields[i]);
+        }
+    }
+    if (Object.keys(req.files).length !== 0) {
+        let path = req.files.file.path;
+        let rawdata = fs.readFileSync(path);
+        acronyms = JSON.parse(rawdata);
+        console.log(acronyms);
+    }
     let created = [];
     for (let acronymObject of acronyms) {
         if (!('acronym' in acronymObject) || !('definition' in acronymObject)) {
@@ -97,7 +109,7 @@ router.post('/', (req, res) => {
  */
 router.put('/:id', (req, res) => {
     let id = req.params.id;
-    let update = req.body;
+    let update = req.fields;
     Acronym.findByIdAndUpdate(id, update, (err) => {
         if (err) {
             return res.status(400).send(err.toString());
