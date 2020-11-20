@@ -82,7 +82,6 @@ router.post('/', (req, res) => {
         let path = req.files.file.path;
         let rawdata = fs.readFileSync(path);
         acronyms = JSON.parse(rawdata);
-        console.log(acronyms);
     }
     let created = [];
     for (let acronymObject of acronyms) {
