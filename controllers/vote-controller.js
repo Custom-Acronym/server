@@ -14,7 +14,7 @@ var router = express.Router()
  */
 router.patch('/:id', (req, res) => {
     let id = req.params.id;
-    let vote = +req.body.vote;
+    let vote = +req.fields.vote;
     Acronym.findById(id, function (err, acronym) {
         if (err || acronym == null || ![1, -1].includes(vote)) {
             return res.status(400).send("couldn't save vote");
